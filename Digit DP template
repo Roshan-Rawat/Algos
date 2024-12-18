@@ -1,0 +1,36 @@
+Using Question of finding number of 1s between 0 to n :
+CODE :-
+
+We apply digit dp  usually in the case when we are given a range like left,right and we have to find the number of some digts appearing in between then or somthing related to that range, 
+so what we do is we first find the answer for 0-right then form 0-left and at last we do (answer_upto_right - answer_upto_left) so me get answer for left-right , it is something like prefix sum .
+ 
+idx = number of index we are currently in , depends on the size of the constraints .
+
+tight - it is a boolean bound used to check whether we are in a restriction or not , if in restriction we can only take upto the last digits lets say it is 4 so we could only take upto {0,1,2,3,4}
+and if their is no restriction then we can take upto 0-9.
+
+cnt - is the number of times a digit is appearing in the number lets say the number is "3333" then cnt could be {1,2,3,4} depends how far we are in the number.
+
+class Solution {
+public:
+    int dp[11][2][11];
+    int solve(string str, int idx , int tight , int cnt){
+        if(idx>=str.size())return cnt;
+        if(dp[idx][tight][cnt]!=-1)return  dp[idx][tight][cnt];
+        int lmt=((tight==1)?str[idx]-'0':9);
+        int ans=0;
+        for(int i=0;i<=lmt;i++){
+            int curr_cnt=cnt+(i==1?1:0);
+            ans+=solve(str,idx+1,(tight&(str[idx]==(i+'0'))),curr_cnt);
+            
+        }
+        return dp[idx][tight][cnt]=ans;
+    }
+    int countDigitOne(int n) {
+        memset(dp,-1,sizeof(dp));
+        string str=to_string(n);
+        return solve(str,0,1,0);
+
+
+    }
+};
